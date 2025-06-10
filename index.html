@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hridimay Das - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- Base Styles & Animated Background --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a; /* Dark background to complement the particles */
+            color: #E5E7EB;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Ensure background is behind content */
+            opacity: 0.6; /* Adjust opacity for visibility and content readability */
+        }
+
+        /* --- Aurora Gradient Background Effect --- */
+        .aurora-background {
+            position: relative;
+            background-color: rgba(17, 24, 39, 0.6); /* Semi-transparent base */
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem; /* Ensure rounded corners for the background card */
+        }
+
+        .aurora-background::before {
+            content: "";
+            position: absolute;
+            left: var(--x);
+            top: var(--y);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #38bdf844, transparent 60%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: left 0.6s ease-out, top 0.6s ease-out;
+            pointer-events: none; /* Make sure it doesn't block clicks */
+        }
+        
+        /* --- Animated Gradient Text --- */
+        .gradient-text {
+            background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc, #f472b6);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: text-gradient-animation 5s linear infinite;
+        }
+
+        @keyframes text-gradient-animation {
+            to {
+                background-position: 200% center;
+            }
+        }
+        
+        /* --- Interactive Social Card Styles --- */
+        .social-card {
+            background-color: rgba(31, 41, 55, 0.4);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d; /* Enable 3D transformations */
+            border-radius: 1.5rem; /* Apply rounded corners to cards */
+        }
+
+        .social-card:hover {
+            border-color: #38bdf8;
+            background-color: rgba(31, 41, 55, 0.7);
+            box-shadow: 0 25px 50px -12px rgba(56, 189, 248, 0.15);
+        }
+
+        .social-card .icon-container {
+            transition: transform 0.3s ease;
+        }
+
+        .social-card:hover .icon-container {
+            transform: scale(1.15);
+        }
+
+        /* --- Scroll-in Animation --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px) scale(0.98);
+            transition: opacity 1s cubic-bezier(0.165, 0.84, 0.44, 1), transform 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* --- Fun Button Style --- */
+        .fun-button {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .fun-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(56, 189, 248, 0.2), 0 4px 6px -2px rgba(56, 189, 248, 0.1);
+        }
+        .fun-button:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    
+    <!-- Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Main Container -->
+    <div class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+
+        <!-- Header Section -->
+        <header class="text-center py-24 sm:py-32 reveal">
+            <h1 class="text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter">
+                <span class="block text-gray-200 mb-2 sm:mb-4">Hey, I'm</span>
+                <span class="gradient-text">Hridimay Das</span>
+            </h1>
+            <p class="mt-6 text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
+                An 18-year-old developer and creator with a deep passion for technology and innovation. Exploring the intersection of code and creativity.
+            </p>
+        </header>
+
+        <!-- About Me Section -->
+        <section class="mb-24 sm:mb-32 reveal">
+            <div class="aurora-background p-8 md:p-12 rounded-3xl">
+                <h2 class="text-3xl font-bold text-gray-100 mb-4">About Me</h2>
+                <p class="text-gray-400 leading-relaxed text-lg">
+                    Ever since I wrote my first line of code, I've been captivated by the power of technology to solve real-world problems and create amazing experiences. I'm constantly learning, experimenting with new frameworks, and building projects that challenge me. Whether it's developing software, creating content, or exploring new tech trends, I pour my energy into everything I do.
+                </p>
+            </div>
+        </section>
+
+        <!-- Links Section -->
+        <section class="mb-24 sm:mb-32 reveal">
+            <h2 class="text-4xl font-bold text-center text-gray-100 mb-12">Connect With Me</h2>
+            <div id="socials-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Spotify -->
+                <a href="https://open.spotify.com/user/31n7b3pnqjf6uk6fujlq4oyuerwy" target="_blank" class="social-card p-6 rounded-3xl flex items-center space-x-4">
+                    <div class="icon-container w-10 h-10">
+                        <!-- Spotify SVG icon with explicit fill color for better visibility -->
+                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
+  <path fill="#1ed760" d="M248 8C111.1 8 0 119.1 0 256s111.1 248 248 248 248-111.1 248-248S384.9 8 248 8Z"/>
+  <path d="M406.6 231.1c-5.2 0-8.4-1.3-12.9-3.9-71.2-42.5-198.5-52.7-280.9-29.7-3.6 1-8.1 2.6-12.9 2.6-13.2 0-23.3-10.3-23.3-23.6 0-13.6 8.4-21.3 17.4-23.9 35.2-10.3 74.6-15.2 117.5-15.2 73 0 149.5 15.2 205.4 47.8 7.8 4.5 12.9 10.7 12.9 22.6 0 13.6-11 23.3-23.2 23.3zm-31 76.2c-5.2 0-8.7-2.3-12.3-4.2-62.5-37-155.7-51.9-238.6-29.4-4.8 1.3-7.4 2.6-11.9 2.6-10.7 0-19.4-8.7-19.4-19.4s5.2-17.8 15.5-20.7c27.8-7.8 56.2-13.6 97.8-13.6 64.9 0 127.6 16.1 177 45.5 8.1 4.8 11.3 11 11.3 19.7-.1 10.8-8.5 19.5-19.4 19.5zm-26.9 65.6c-4.2 0-6.8-1.3-10.7-3.6-62.4-37.6-135-39.2-206.7-24.5-3.9 1-9 2.6-11.9 2.6-9.7 0-15.8-7.7-15.8-15.8 0-10.3 6.1-15.2 13.6-16.8 81.9-18.1 165.6-16.5 237 26.2 6.1 3.9 9.7 7.4 9.7 16.5s-7.1 15.4-15.2 15.4z"/>
+</svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-200">Spotify</h3>
+                        <p class="text-gray-400 text-sm">My Playlists</p>
+                    </div>
+                </a>
+
+                <!-- GitHub -->
+                <a href="https://github.com/hridimay" target="_blank" class="social-card p-6 rounded-3xl flex items-center space-x-4">
+                    <div class="icon-container w-10 h-10 text-gray-300">
+                        <!-- GitHub SVG icon -->
+                        <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.492.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.942.359.308.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-200">GitHub</h3>
+                        <p class="text-gray-400 text-sm">My Code & Projects</p>
+                    </div>
+                </a>
+                
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/hridimay" target="_blank" class="social-card p-6 rounded-3xl flex items-center space-x-4">
+                    <div class="icon-container w-10 h-10">
+                        <!-- Instagram SVG icon with gradient fill -->
+                        <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" >
+                            <defs>
+                                <radialGradient id="insta-gradient" cx="0.3" cy="1.2" r="1.5">
+                                    <stop offset="0%" stop-color="#fdf497" />
+                                    <stop offset="5%" stop-color="#fdf497" />
+                                    <stop offset="45%" stop-color="#fd5949" />
+                                    <stop offset="60%" stop-color="#d6249f" />
+                                    <stop offset="90%" stop-color="#285AEB" />
+                                </radialGradient>
+                            </defs>
+                            <path d="M9 2L7.17 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4H16.83L15 2H9ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17Z" fill="url(#insta-gradient)"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-200">Instagram</h3>
+                        <p class="text-gray-400 text-sm">Life & Moments</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="text-center py-12">
+            <p class="text-gray-500">Designed & Built by Hridimay Das with a sprinkle of ✨</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // --- three.js Animated Particle Background ---
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            // Particle System Configuration
+            const particleCount = 500; // Number of particles
+            const particles = new THREE.BufferGeometry();
+            const particleVertices = []; // Stores x, y, z for each particle
+            const particleColors = [];   // Stores r, g, b for each particle
+            const particleSpeeds = [];   // Stores individual speed for each particle
+            const colorPalette = [
+                new THREE.Color(0x38bdf8), // Sky blue
+                new THREE.Color(0x818cf8), // Indigo
+                new THREE.Color(0xc084fc), // Purple
+                new THREE.Color(0xf472b6)  // Pink
+            ];
+
+            // Initialize particles with random positions, colors, and speeds
+            for (let i = 0; i < particleCount; i++) {
+                // Random positions within a cube range (-20 to 20 for X/Y, -35 to -5 for Z relative to camera)
+                particleVertices.push(
+                    (Math.random() * 2 - 1) * 20, // x
+                    (Math.random() * 2 - 1) * 20, // y
+                    (Math.random() * 2 - 1) * 30 - 30 // z (starts mostly behind the camera)
+                );
+
+                // Assign a random color from the defined palette
+                const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+                particleColors.push(color.r, color.g, color.b);
+
+                // Assign a random speed to each particle for varied movement
+                particleSpeeds.push(Math.random() * 0.05 + 0.01); 
+            }
+
+            // Set the attributes for the particles geometry
+            particles.setAttribute('position', new THREE.Float32BufferAttribute(particleVertices, 3));
+            particles.setAttribute('color', new THREE.Float32BufferAttribute(particleColors, 3));
+
+            // Create the material for the particles (PointsMaterial for a particle cloud effect)
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.1,          // Size of each particle
+                vertexColors: true, // Use colors defined per vertex
+                blending: THREE.AdditiveBlending, // For a glowing, ethereal effect
+                transparent: true,  // Allow transparency
+                opacity: 0.8        // Overall opacity of particles
+            });
+
+            // Create the particle mesh and add it to the scene
+            const particleMesh = new THREE.Points(particles, particleMaterial);
+            scene.add(particleMesh);
+
+            camera.position.z = 10; // Position the camera to view the particle field
+
+            // Animation loop for the particles
+            function animate() {
+                requestAnimationFrame(animate);
+
+                const positions = particles.attributes.position.array;
+                for (let i = 0; i < particleCount; i++) {
+                    const i3 = i * 3; // Index for current particle's x, y, z in the array
+
+                    // Move particles along the Z-axis (towards the camera) based on their individual speed
+                    positions[i3 + 2] += particleSpeeds[i];
+
+                    // If a particle moves past the camera's Z position, reset it to the far back
+                    if (positions[i3 + 2] > camera.position.z) {
+                        positions[i3 + 2] = (Math.random() * 2 - 1) * 30 - 30; // Reset Z far behind camera with some randomness
+                        positions[i3] = (Math.random() * 2 - 1) * 20;         // Reset X randomly within scene bounds
+                        positions[i3 + 1] = (Math.random() * 2 - 1) * 20;     // Reset Y randomly within scene bounds
+                    }
+                }
+                particles.attributes.position.needsUpdate = true; // Essential to update particle positions
+
+                // Add subtle rotation to the entire particle system for a dynamic feel
+                particleMesh.rotation.y += 0.0005;
+                particleMesh.rotation.x += 0.0002;
+
+                renderer.render(scene, camera); // Render the scene
+            }
+            animate(); // Start the animation
+
+            // Handle window resize for responsiveness
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // --- Scroll Reveal Animation ---
+            const revealElements = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            revealElements.forEach(elem => observer.observe(elem));
+            
+            // --- Interactive 3D Card Tilt Effect ---
+            const cards = document.querySelectorAll('.social-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = (y - centerY) / 20; // Control tilt intensity
+                    const rotateY = (centerX - x) / 20;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                });
+            });
+
+            // --- Aurora Background Effect ---
+            const auroraElements = document.querySelectorAll('.aurora-background');
+            auroraElements.forEach(el => {
+                el.addEventListener('mousemove', e => {
+                    const rect = el.getBoundingClientRect();
+                    el.style.setProperty('--x', e.clientX - rect.left + 'px');
+                    el.style.setProperty('--y', e.clientY - rect.top + 'px');
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
